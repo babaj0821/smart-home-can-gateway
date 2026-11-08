@@ -1,0 +1,269 @@
+{
+  "name": "PADNA-CAN-Gateway",
+  "id": "60c2046a-d093-4feb-a042-fbcd27875eee",
+  "interface": "socketcan",
+  "channel": "can0",
+  "backend": {
+    "receive_own_messages": true,
+    "fd": false
+  },
+  "reconnect": true,
+  "reconnectPeriod": 5,
+  "devices": [
+    {
+      "converters": {
+        "uplink": "SmartPanelCanUplinkConverter"
+      },
+      "name": "Lamp Controller",
+      "type": "lamp-controller",
+      "sendDataOnlyOnChange": false,
+      "strictEval": true,
+      "attributes": [
+        {
+          "key": "register_raw",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value"
+        },
+        {
+          "key": "lamp_1",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        },
+        {
+          "key": "lamp_2",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        },
+        {
+          "key": "lamp_3",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        },
+        {
+          "key": "lamp_4",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        },
+        {
+          "key": "lamp_5",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        },
+        {
+          "key": "lamp_6",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        }
+      ],
+      "serverSideRpc": [
+        {
+          "method": "setLedBit3",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataBefore": "xx"
+        },
+        {
+          "method": "setLedBit1",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataBefore": "xx"
+        },
+        {
+          "method": "setLedBit2",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataBefore": "xx"
+        },
+        {
+          "method": "setLedBit4",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataBefore": "xx"
+        },
+        {
+          "method": "setLedBit5",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataBefore": "xx"
+        },
+        {
+          "method": "setLedBit6",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataBefore": "xx"
+        }
+      ]
+    },
+    {
+      "name": "Thermostat",
+      "type": "can",
+      "sendDataOnlyOnChange": true,
+      "enableUnknownRpc": false,
+      "strictEval": true,
+      "converters": {
+        "uplink": "SmartPanelCanUplinkConverter"
+      },
+      "timeseries": [
+        {
+          "key": "Tempreture",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value"
+        },
+        {
+          "key": "SetPointValue",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        }
+      ],
+      "attributes": [
+        {
+          "key": "FanSpeep",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        },
+        {
+          "key": "CoolHeat",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        },
+        {
+          "key": "Auto",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value",
+          "expression": "expression"
+        }
+      ],
+      "serverSideRpc": [
+        {
+          "method": "setFanSpeed",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "response": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataAfter": "xx"
+        },
+        {
+          "method": "setCoolHeat",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "response": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataAfter": "xx"
+        },
+        {
+          "method": "setAuto",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "response": false,
+          "dataLength":"len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataAfter": "xx"
+        },
+        {
+          "method": "setPoint",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "response": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataAfter": "xx"
+        },
+        {
+          "method": "setSenario",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "response": false,
+          "dataLength": "len",
+          "dataByteorder": "big",
+          "dataExpression": "dataExpression",
+          "dataBefore": "xx"
+        }
+      ]
+    },
+    {
+      "name": "Blind",
+      "type": "can",
+      "sendDataOnlyOnChange": true,
+      "enableUnknownRpc": false,
+      "strictEval": true,
+      "converters": {
+        "uplink": "SmartPanelCanUplinkConverter"
+      },
+      "attributes": [
+        {
+          "key": "Blind-first",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value"
+        },
+        {
+          "key": "Blind-second",
+          "nodeId": "nodeId",
+          "isExtendedId": false,
+          "command": "command",
+          "value": "value"
+        }
+      ]
+    }
+  ],
+  "logLevel": "INFO",
+  "enableRemoteLogging": false,
+  "configVersion": "3.8.4"
+}

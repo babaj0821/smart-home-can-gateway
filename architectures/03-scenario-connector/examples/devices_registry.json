@@ -1,0 +1,10 @@
+{
+    "devices": {
+        "Thermostat": {
+            "type": "thermostat"
+        },
+        "Lamp Controller": {
+            "type": "lamp"
+        }
+    }
+}

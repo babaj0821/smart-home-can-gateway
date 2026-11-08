@@ -1,0 +1,54 @@
+{
+  "scenarios": {
+    "day": {
+      "name": "day",
+      "actions": [
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 1
+        },
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 2
+        },
+        {
+          "device": "thermostat",
+          "action": "set_fan_speed",
+          "value": 3
+        }
+      ]
+    },
+    "night": {
+      "name": "night",
+      "actions": [
+        {
+          "device": "lamp",
+          "action": "turn_off",
+          "number": 1
+        },
+        {
+          "device": "lamp",
+          "action": "turn_off",
+          "number": 2
+        },
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 3
+        }
+      ]
+    },
+    "outofhouse": {
+      "name": "outofhouse",
+      "actions": [
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 1
+        }
+      ]
+    }
+  }
+}

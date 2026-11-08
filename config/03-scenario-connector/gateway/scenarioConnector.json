@@ -1,0 +1,18 @@
+{
+  "name": "ScenarioConnector",
+  "id": "1af26c6d-aeeb-48db-9e74-271b3b41849f",
+  "device": {
+    "name": "Local Processor",
+    "type": "default"
+  },
+  "canConnectorName": "PADNA-CAN-Gateway",
+  "localProcessorGrpc": {
+    "target": "127.0.0.1:50051",
+    "timeoutSeconds": 3
+  },
+  "commandPullLimit": 100,
+  "commandPollIntervalSeconds": 0.25,
+  "commandRetryIntervalSeconds": 1,
+  "logLevel": "INFO",
+  "enableRemoteLogging": false
+}

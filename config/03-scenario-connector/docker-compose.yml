@@ -1,0 +1,25 @@
+# Reference host-network deployment for Linux + SocketCAN.
+# Run this Compose file from config/03-scenario-connector/.
+# This layout is a documented starting point; validate mounts and the CAN
+# connector API against the pinned Gateway image before hardware deployment.
+services:
+  tb-gateway:
+    image: thingsboard/tb-gateway:3.8.4
+    container_name: tb-gateway
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      TB_GW_HOST: ${TB_GW_HOST:?Set TB_GW_HOST in .env}
+      TB_GW_PORT: ${TB_GW_PORT:-1883}
+      TB_GW_ACCESS_TOKEN: ${TB_GW_ACCESS_TOKEN:?Set TB_GW_ACCESS_TOKEN in .env}
+      TB_GW_LOGS_PATH: /thingsboard_gateway/logs
+      CAN_INTERFACE: ${CAN_INTERFACE:-can0}
+    volumes:
+      - ./gateway:/thingsboard_gateway/config
+      - ../../architectures/03-scenario-connector/can:/thingsboard_gateway/extensions/can:ro
+      - ../../architectures/03-scenario-connector/scenario_connector_files:/thingsboard_gateway/extensions/custom:ro
+      - ../../architectures/03-scenario-connector/smart_panel_shared:/thingsboard_gateway/extensions/smart_panel_shared:ro
+      - ../../architectures/03-scenario-connector/runtime/logs:/thingsboard_gateway/logs

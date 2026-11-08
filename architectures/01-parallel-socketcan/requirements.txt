@@ -1,0 +1,2 @@
+# MQTT bridge to ThingsBoard; the SocketCAN and scenario code use stdlib.
+paho-mqtt

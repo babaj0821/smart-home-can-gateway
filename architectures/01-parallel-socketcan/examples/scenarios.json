@@ -1,0 +1,98 @@
+{
+  "scenarios": {
+    "Night": {
+      "actions": [
+        {
+          "device": "lamp",
+          "number": 1,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 2,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 3,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 4,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 5,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 6,
+          "action": "turn_off"
+        },
+        {
+          "device": "thermostat",
+          "action": "set_sp",
+          "value": 22.0
+        },
+        {
+          "device": "thermostat",
+          "action": "set_auto"
+        },
+        {
+          "device": "thermostat",
+          "action": "set_cool"
+        }
+      ]
+    },
+    "day": {
+      "actions": [
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 1
+        },
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 5
+        },
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 3
+        },
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 4
+        },
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 6
+        },
+        {
+          "device": "lamp",
+          "action": "turn_on",
+          "number": 2
+        },
+        {
+          "device": "thermostat",
+          "action": "set_sp",
+          "value": 16
+        },
+        {
+          "device": "thermostat",
+          "action": "set_auto"
+        },
+        {
+          "device": "thermostat",
+          "action": "set_heat"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Credentials / machine-specific environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Runtime state and logs (the examples/ folders contain safe sample JSON)
+**/storage/data.json
+**/scenario/data.json
+**/scenario/scenario_data.json
+**/scenario_connector_files/scenario_data.json
+**/scenario_connector_files/devices_registry.json
+**/runtime/
+**/logs/
+*.log
+*.tmp
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

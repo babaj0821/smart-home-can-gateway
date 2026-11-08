@@ -1,0 +1,76 @@
+{
+  "scenarios": {
+    "night": {
+      "name": "night",
+      "description": "all led off",
+      "actions": [
+        {
+          "device": "lamp",
+          "number": 1,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 2,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 3,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 4,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 5,
+          "action": "turn_off"
+        },
+        {
+          "device": "lamp",
+          "number": 6,
+          "action": "turn_off"
+        }
+      ]
+    },
+    "day": {
+      "name": "day",
+      "description": "استفاده در زمان صبح",
+      "actions": [
+        {
+          "device": "lamp",
+          "number": 1,
+          "action": "turn_on"
+        },
+        {
+          "device": "lamp",
+          "number": 2,
+          "action": "turn_on"
+        },
+        {
+          "device": "lamp",
+          "number": 3,
+          "action": "turn_on"
+        },
+        {
+          "device": "lamp",
+          "number": 4,
+          "action": "turn_on"
+        },
+        {
+          "device": "lamp",
+          "number": 5,
+          "action": "turn_on"
+        },
+        {
+          "device": "lamp",
+          "number": 6,
+          "action": "turn_on"
+        }
+      ]
+    }
+  }
+}

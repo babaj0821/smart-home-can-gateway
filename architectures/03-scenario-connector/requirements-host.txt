@@ -1,0 +1,4 @@
+# For the local gRPC processor and CLI (on the Linux host).
+grpcio
+protobuf
+# The GTK4 UI additionally needs OS packages python3-gi and gir1.2-gtk-4.0.
