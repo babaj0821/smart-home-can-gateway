@@ -13,7 +13,6 @@ The user requested a reorganized, GitHub-ready starting point. This document mak
 | Smart Panel RPC | gRPC on host loopback `127.0.0.1:50051` | Present in both the original server code and Scenario Connector config |
 | Host/container routing | Linux Docker host networking for the gateway container | The supplied code uses host loopback for gRPC; the reorganized Compose file retains `network_mode: host` |
 | Python | Python 3.11 or 3.12 is a reasonable development target | Archived Python bytecode was for 3.11/3.12; final environment still needs testing |
-| Device-specific CAN messages | **Intentionally anonymized / not guessed** | The user explicitly replaced device-specific values with placeholders; preserve redactions rather than inventing protocol mappings |
 | ThingsBoard Edge | **Tested during internship; source to be uploaded later** | The report describes the Rule Chain implementation idea and unsuccessful stability trials on Orange Pi Zero 3; no runnable Edge implementation files are supplied in this public snapshot |
 
 ## Changes made to the supplied code tree
