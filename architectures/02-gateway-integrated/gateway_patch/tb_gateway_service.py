@@ -11,6 +11,14 @@
 #     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
+#
+#     Modifications Copyright 2026 Imanbabajani
+#     Modified from the upstream ThingsBoard Gateway: added state hooks and
+#     Unix-domain-socket IPC for the Local Processor.
+
+import uuid
+
+import uuid
 import uuid
 import concurrent
 import logging
