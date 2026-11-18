@@ -13,9 +13,15 @@ The underlying system combines CAN-equipped smart-home devices, a Linux gateway,
 ![Parallel routes to the bus and server](diagrams/parallel-socketcan-duplicate-paths.png)
 
 ```text
-CAN bus/can0 -> ThingsBoard Gateway -> ThingsBoard server
-           \-> Local Processor -> CAN protocol + device models + Scenario Engine
-                                \-> separate MQTT bridge
+CAN bus (can0)
+  |
+  +--> ThingsBoard Gateway --> ThingsBoard Server
+  |
+  +--> Local Processor
+         |-- CAN protocol
+         |-- Device models
+         |-- Scenario Engine
+         `--> MQTT Bridge (separate)
 ```
 
 **What was tried:** independent SocketCAN sockets on the same interface; layered interface/protocol/device code; local lamp controls, thermostat functions and a Scenario Engine; a separate ThingsBoard MQTT bridge.
