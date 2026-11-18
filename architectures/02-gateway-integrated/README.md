@@ -46,7 +46,7 @@ This **tested architecture alternative** retains **ThingsBoard Gateway as the on
 | [`terminal/`](terminal/) | Host-side local terminal interface. |
 | [`examples/scenarios.json`](examples/scenarios.json) | Sanitized example scenarios, **not real deployment data**. |
 
-The gateway file is based on **ThingsBoard upstream code** and retains its Apache-2.0 header. The bundled [Apache-2.0 license](gateway_patch/LICENSE-APACHE-2.0.txt) applies to that modified upstream file, **not automatically to all other project files**. Avoid copying the entire upstream distribution into this repository. Review rights to publish your own additions separately.
+The gateway file is based on **ThingsBoard upstream code** and retains its Apache-2.0 header. The bundled [Apache-2.0 license](gateway_patch/LICENSE-APACHE-2.0.txt) applies to that modified upstream file, **not automatically to all other project files**. Avoid copying the entire upstream distribution into this repository. All other files in this repository are original work, licensed under <MIT / Apache-2.0>; see `LICENSE`.
 
 ## Data and command paths
 
