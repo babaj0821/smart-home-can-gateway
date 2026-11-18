@@ -14,30 +14,6 @@ The user requested a reorganized, GitHub-ready starting point. This document mak
 | Host/container routing | Linux Docker host networking for the gateway container | The supplied code uses host loopback for gRPC; the reorganized Compose file retains `network_mode: host` |
 | Python | Python 3.11 or 3.12 is a reasonable development target | Archived Python bytecode was for 3.11/3.12; final environment still needs testing |
 | ThingsBoard Edge | **Tested during internship; source to be uploaded later** | The report describes the Rule Chain implementation idea and unsuccessful stability trials on Orange Pi Zero 3; no runnable Edge implementation files are supplied in this public snapshot |
-
-## Changes made to the supplied code tree
-
-1. Renamed the misspelled top-level directories to `01-parallel-socketcan`, `02-gateway-integrated`, and `03-scenario-connector`, keeping their internal module layouts to avoid breaking imports.
-2. Removed `__pycache__` directories and compiled Python files; added a root `.gitignore`.
-3. Extracted original architecture figures from the report and placed them under `docs/diagrams/` with meaningful English filenames.
-4. Moved non-identifying example scenarios to `examples/scenarios.json` within each implementation. Runtime scenario databases and the writable device registry are **not tracked**; each corresponding storage class can initialize missing files.
-5. Removed hard-coded ThingsBoard device tokens from the parallel MQTT configuration and architecture 03 Docker Compose reference; supplied `.env.example` templates. The uploader reports that token-like strings were anonymized; rotate any credential that was actually deployed or exposed.
-6. Replaced hard-coded Unix-socket authentication keys in the gateway-integrated host code with required `GATEWAY_AUTHKEY` and `SMART_PANEL_AUTHKEY` environment variables. Also replaced two literal IPC keys in the newly supplied `gateway_patch/tb_gateway_service.py` with matching environment lookups. Their remote peers must use identical private keys.
-7. Repaired a Python syntax error in `01-parallel-socketcan/canbus/can_interface.py` and changed its basic classic CAN frame representation to the standard Linux `struct can_frame` layout (`=IB3x8s`). **No project-specific CAN payload format was invented.**
-8. Added `03-scenario-connector/smart_panel_shared/can_scenario_bridge.py`, which was **missing from the supplied archive** but imported by its converter and Scenario Connector. The added implementation is a bounded, in-process FIFO queue matching the existing `push_telemetry`, `get_telemetry`, and `telemetry_qsize` calls. It is new/reconstructed code, not an assertion about the missing original.
-9. Updated the sample Docker Compose source mounts for the provided CAN converter, Scenario Connector and shared helper folders; added `requirements-host.txt` and one queue-only unit test. The Compose file now lives at root `config/03-scenario-connector/docker-compose.yml`.
-10. Added **only** `gateway_patch/tb_gateway_service.py` from the newly supplied `thingsboard-gateway.zip` into architecture 02, preserving its upstream copyright header and bundling a file-scoped Apache-2.0 license copy. No upstream backup versions, `can_connector.py`, patch scripts, bytecode, or Dockerfile were included.
-
-11. Documented **architecture 04**, including the report's real ThingsBoard Edge experimentation and unstable Orange Pi Zero 3 result. The source/configuration files have not been supplied and were not invented.
-12. **Centralized deployment configuration under root `config/`**: architecture-specific `.env.example` files, architecture 03 Gateway JSON/statistics and Compose template, and the MCP2515 Device Tree overlay. Adjusted documentation commands and Compose bind mounts to the new locations.
-13. Reframed the project as a comparison of **four tested architectures with distinct organizational trade-offs**, not as a single universally best design. See [Comparison](architecture-comparison.md) and [Organizational selection guide](organization-selection-guide.md).
-
-The user confirmed that device protocol constants, identifiers and configuration values in the supplied source were intentionally anonymized. Treat them as **redactions**, not proof of an implementation gap in the original environment. This public package does not restore private values.
-
-See [Publication and redaction review](publication-review.md) for the concrete remaining identifiers and static security checks.
-
-The repository documents **four tested architectural approaches** with different strengths and limitations. Only **three** have implementation files in this public archive. The Edge evaluation is preserved even though its files are still to be pushed; lack of repository source does not mean lack of internship testing. There is no universal architecture recommendation—organizations should choose according to their requirements.
-
 ## Known functional limitations
 
 ### Parallel SocketCAN
