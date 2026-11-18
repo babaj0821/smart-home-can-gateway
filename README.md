@@ -101,10 +101,6 @@ python3 -m compileall -q architectures tests
 
 These checks **do not** substitute for physical CAN, outage/recovery, ThingsBoard, UI, or ThingsBoard Edge hardware tests. The source code for the Edge experiment is not yet in this repository.
 
-## Documentation, provenance, and publication
-
-The architecture narratives, test observations, and extracted figures are grounded in the supplied internship report. Implementations of 01–03 came from the anonymized `internship.zip`; the only separately supplied upstream Gateway file retained for 02 is the customized `tb_gateway_service.py`. The original report is not distributed here because it includes personal and organizational details. The comparisons reflect report-based observations, not a separate numeric benchmark or unverified slide-deck ratings.
-
 Before publishing publicly, review [publication/redaction notes](docs/publication-review.md), [assumptions and source changes](docs/assumptions-and-open-items.md), and [GitHub publishing instructions](PUBLISHING.md). Some identifiers, organization names, CAN pin mappings, and diagram labels remain visible for manual review. The user-supplied dummy protocol fields are preserved rather than replaced with fabricated values.
 
 **This repository documents four tested approaches so that different organizations can make their own evidence-based architectural choices.**
