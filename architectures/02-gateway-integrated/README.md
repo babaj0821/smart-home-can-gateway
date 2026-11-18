@@ -123,12 +123,3 @@ To use the example scenario storage, copy the sanitized fixture to `scenario/dat
 - Host/container IPC requires explicit shared-socket paths, permissions and authentication.
 
 **Organizational fit:** consider this approach if a team values a **single CAN authority** and is willing to maintain its own customized ThingsBoard Gateway distribution. Teams that need to avoid changing Gateway core code may prefer to investigate [03 — Scenario Connector](../03-scenario-connector/README.md); organizations with stronger native ThingsBoard expertise should also compare [04 — Edge](../04-thingsboard-edge/README.md).
-
-## Boundaries and cautions
-
-- CAN payloads/IDs masked elsewhere in the source are **intentional example/redaction values**; do not substitute plausible numeric guesses and do not use unverified commands on physical actuators.
-- The gateway source includes a debug `print` of the live local telemetry cache. That is not a committed credential, but may reveal device states in deployment logs; remove or redact it in production.
-- Manager proxies use Python serialization and are suitable only for **trusted local peers**. Preserve UNIX file permissions and protect the IPC keys.
-- This is a customized upstream module, not a self-contained or tested fork of ThingsBoard Gateway. Only `tb_gateway_service.py` from the new archive was included; backups, connector copies, bytecode, Dockerfile and patch utilities were deliberately excluded.
-
-See [Source redaction and publication review](../../docs/publication-review.md) before publishing.
