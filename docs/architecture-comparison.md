@@ -44,13 +44,12 @@ CAN bus (can0)
 ![Gateway hooks, Unix socket, and local processing](diagrams/gateway-integrated-overview.png)
 
 ```text
-CAN bus <-> CAN Connector / converters <-> ThingsBoard Gateway <-> ThingsBoard
-                            |
-                      Gateway state hooks + local RPC
-                            |
-                     Unix-domain-socket IPC
-                            |
-                       Local Processor
+CAN bus <--> CAN Connector / Converters <--> ThingsBoard Gateway <--> ThingsBoard
+                                                      |
+                                                      |  Gateway state hooks + local RPC
+                                                      |  (Unix domain socket IPC)
+                                                      |
+                                               Local Processor
 ```
 
 **What was tried:** exposing already-converted device state from Gateway, local RPC injection into the existing downlink path, host/container communication through a shared Unix-domain socket, and a Python local client/scenario process.
