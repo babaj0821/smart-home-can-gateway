@@ -149,7 +149,3 @@ A choice should follow the team's **resource envelope**, **CAN ownership model**
 - **Native ThingsBoard automation and integration outweigh embedded resource limits:** investigate **04**, after verifying Edge stability on the organization's actual hardware.
 
 Use the **[organizational selection worksheet](organization-selection-guide.md)** to document priorities and validation results rather than declaring one option universally optimal.
-
-## What “tested” means here
-
-The internship report describes **engineering tests and trials of all four** architectures. They were **not all completed to the same deployment maturity**, and the public archive does not contain reproducible source for the Edge trial. The Edge hardware test demonstrated a **negative feasibility result for that specific device/configuration**. The cleaned archive itself has received only limited static/unit checks; it has **not** been re-tested end to end against the original devices.
