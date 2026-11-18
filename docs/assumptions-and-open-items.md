@@ -8,7 +8,7 @@ The user requested a reorganized, GitHub-ready starting point. This document mak
 |---|---|---|
 | Linux board | Orange Pi Zero 3 with a suitable Linux distribution, e.g., Ubuntu Noble | Named in the report; verify kernel, GPIO mappings, and actual board revision |
 | CAN adapter | MCP2515 over SPI with a Linux `can0` interface | Present in the Device Tree source and report; pin mapping and bus timing are hardware-dependent |
-| Gateway software | 3.8.4 for architecture 03; the separately uploaded gateway patch Dockerfile named 3.8.3 | These are different architecture snapshots; neither proves the full modified gateway file is compatible without testing |
+| Gateway software | 3.8.4 for architecture 03; the separately uploaded gateway patch Dockerfile named 3.8.3 | The reason I chose a different version of ThingsBoard Gateway was a problem in 3.8.3 that sometimes deleted the custom connectors, so for the 4th architecture I changed it to 3.8.4.|
 | IoT transport | ThingsBoard Gateway communicates with the ThingsBoard server over the configured network/MQTT transport | Based on the report and gateway configuration; your server host, port, and credentials are not in the public repository |
 | Smart Panel RPC | gRPC on host loopback `127.0.0.1:50051` | Present in both the original server code and Scenario Connector config |
 | Host/container routing | Linux Docker host networking for the gateway container | The supplied code uses host loopback for gRPC; the reorganized Compose file retains `network_mode: host` |
