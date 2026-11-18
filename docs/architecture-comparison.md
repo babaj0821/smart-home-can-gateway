@@ -35,6 +35,7 @@ CAN bus (can0)
 - Both Gateway and Local Processor interpret CAN traffic; duplicated protocol and device mapping code can drift.
 - A separate MQTT bridge adds another server-facing integration path and potential state coordination concerns.
 - Independent components need their own arbitration/coordination when issuing commands to the same physical devices.
+- Keeping the Gateway alongside the Local Processor creates redundancy, which can be read in two ways: it can improve fault tolerance, but it also makes the Gateway less central to the system.
 
 **Potentially suitable when:** minimizing coupling to Gateway or preserving independent CAN access matters more than a single centralized translation path.
 
