@@ -1,6 +1,6 @@
 # Architecture selection guide for organizations
 
-This guide turns the **four evaluated CAN / ThingsBoard local-processing architectures** into an engineering decision process. There is **no default recommendation**: different companies may prioritize direct CAN access, low-cost hardware, maintainability, centralized protocol translation, or native ThingsBoard automation differently.
+I use this guide to translate the **four architectures I evaluated** into an engineering decision process. There is **no default recommendation**: different companies may prioritize direct CAN access, low-cost hardware, maintainability, centralized protocol translation, or native ThingsBoard automation differently.
 
 Start with the [technical comparison](architecture-comparison.md), then fill in this worksheet for your own environment.
 
@@ -30,7 +30,7 @@ These are **starting points for evaluation**, not exhaustive rankings or claims 
 
 ## 3. Create your own weighted decision matrix
 
-Replace the blank weights/scores with your organization's policy. Suggested scale: **weight 1–5** (importance) and **score 1–5** (how well the *tested implementation on your hardware* meets it). **Do not pre-fill scores from this report**: the four alternatives were not subjected to an identical benchmark.
+Replace the blank weights/scores with your organization's policy. Suggested scale: **weight 1–5** (importance) and **score 1–5** (how well the *tested implementation on your hardware* meets it). **Do not infer scores from my evaluation alone**: I did not benchmark all four alternatives under identical conditions.
 
 | Criterion | Weight (1–5) | 01 score | 02 score | 03 score | 04 score | Evidence / acceptance test |
 |---|---:|---:|---:|---:|---:|---|
@@ -55,7 +55,7 @@ For every candidate seriously considered, run the same controlled tests on targe
 5. Upgrade the underlying ThingsBoard Gateway/Edge version and measure the integration work required.
 6. Review exposure of credentials, Unix sockets, gRPC listeners, remote dashboards, logs, and CAN protocol constants.
 
-**Edge-specific early gate:** the internship's Orange Pi Zero 3 trial did not stabilize with Edge and Gateway running together, so verify memory headroom *before* investing in migration to the native Rule Chain design.
+**Edge-specific early gate:** I could not stabilize Edge and Gateway together on my Orange Pi Zero 3 setup, so verify memory headroom *before* investing in migration to the native Rule Chain design.
 
 ## 5. Decision record template
 

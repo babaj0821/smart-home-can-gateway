@@ -12,13 +12,12 @@
 #     See the License for the specific language governing permissions and
 #     limitations under the License.
 #
-#     Modifications Copyright 2026 Imanbabajani
-#     Modified from the upstream ThingsBoard Gateway: added state hooks and
-#     Unix-domain-socket IPC for the Local Processor.
+#     Modifications Copyright 2026 Iman Babajani
+#     Modified by Iman Babajani in 2026 from the upstream ThingsBoard Gateway:
+#     added local state hooks and authenticated Unix-domain-socket IPC for
+#     the Local Processor and scenario RPC forwarding. Modified IPC keys to
+#     read from environment variables. Removed telemetry-cache debug output.
 
-import uuid
-
-import uuid
 import uuid
 import concurrent
 import logging
@@ -1293,7 +1292,7 @@ class TBGatewayService:
                 "attributes": data.attributes.to_dict()
             }
 
-            print("LOCAL CACHE UPDATED:", self.__local_device_data)
+            # Device state can be sensitive; do not print the entire cache.
 
         except Exception as e:
             log.error("Failed to update local data: %s", e)

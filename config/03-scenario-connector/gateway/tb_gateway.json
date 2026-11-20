@@ -1,10 +1,10 @@
 {
   "thingsboard": {
-    "host": "host ip",
+    "host": "thingsboard.example.invalid",
     "port": 11883,
     "remoteShell": false,
     "remoteConfiguration": true,
-    "managerEnabled": true,
+    "managerEnabled": false,
     "latencyDebugMode": false,
     "statistics": {
       "enable": true,
@@ -21,7 +21,7 @@
     "checkConnectorsConfigurationInSeconds": 60,
     "handleDeviceRenaming": true,
     "security": {
-      "accessToken": "accessToken"
+      "accessToken": "replace-with-gateway-token"
     },
     "qos": 1,
     "reportStrategy": {

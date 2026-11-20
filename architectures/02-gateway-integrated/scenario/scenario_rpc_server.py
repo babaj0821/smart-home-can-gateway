@@ -30,7 +30,7 @@ class SmartPanelScenarioService:
             method = request.get("method")
             params = request.get("params") or {}
 
-            print("Scenario RPC:", method, params, flush=True)
+            # Avoid logging RPC parameters: scenarios may contain private device data.
 
             if method == "refresh":
                 self.connect()

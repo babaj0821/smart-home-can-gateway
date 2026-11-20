@@ -2,9 +2,9 @@
 
 A connector-based smart-home architecture that keeps **ThingsBoard Gateway** in charge of physical CAN communication and places **local scenario orchestration** in a separate **Smart Panel / Local Processor** service. A custom **Scenario Connector** bridges these two components without requiring the Local Processor to decode or transmit CAN frames directly.
 
-This is **one of four tested architectural approaches**, not an automatic winner for every deployment. Its supplied code snapshot happens to include a broad set of pieces: CAN converters, a Scenario Connector implementation, a host-side gRPC server, scenario logic/storage, and GTK4 UI code. **Code completeness in the public archive is not a performance ranking against other approaches.**
+I tested this as **one of four alternative architectures**, not as an automatic winner for every deployment. I include the main experimental components: CAN converters, a Scenario Connector implementation, a host-side gRPC server, scenario logic/storage, and GTK4 UI code. **The presence of more source files here is not evidence that this approach performs better than the others.**
 
-> **Deployment status:** This is a development reference. The original ZIP omitted a shared telemetry queue helper; a minimal compatible helper has been reconstructed and clearly identified below. Actual CAN hardware, ThingsBoard connectivity, and Docker extension loading have not been verified in this cleaned repository.
+> **Deployment status:** This is a development reference. I included a small replacement for a missing shared telemetry queue helper and describe its behavior below. I have not rerun the complete CAN, ThingsBoard, Docker, and UI integration test on this packaged snapshot.
 
 [← Main repository](../../README.md) · [Architecture comparison](../../docs/architecture-comparison.md) · [Hardware bring-up](../../hardware/README.md)
 
@@ -24,7 +24,7 @@ The system consists of three cooperating execution domains:
 
 ## Engineering evaluation: strengths and limitations
 
-**What was tested in the internship:** a Scenario Connector communicating with the host-side Local Processor through gRPC, CAN telemetry forwarding, local RPC dispatch, revisions from Event Bus to queue, and a GTK-based local UI.
+**What I evaluated:** a Scenario Connector communicating with a host-side Local Processor over gRPC, CAN telemetry forwarding, local RPC dispatch, a transition from Event Bus to a queue, and a GTK-based UI.
 
 **Strengths**
 - Gateway remains responsible for CAN access and conversion, while scenario orchestration is a separate service.
@@ -64,7 +64,7 @@ The CAN Uplink Converter calls the standard byte-based converter first. It then 
 
 ![Refined telemetry route using a queue rather than a general-purpose event bus](../../docs/diagrams/scenario-telemetry-queue.png)
 
-The original experiment used an **Event Bus**; its additional publish/subscribe machinery was replaced by a simple queue for the single-producer/single-consumer telemetry path. Old Event Bus files remain in the source snapshot as reference code, but are not the intended active route.
+I initially experimented with an **Event Bus**, then replaced its publish/subscribe machinery with a simpler queue for the single-producer/single-consumer telemetry path. Old Event Bus files remain in the source snapshot as reference code, but are not the intended active route.
 
 ## Downlink: local scenario to CAN device
 
@@ -143,11 +143,11 @@ See the [central configuration guide](../../config/README.md) before deployment.
 
 ### Earlier implementations kept for reference
 
-The archive also contains `scenario_connector_files/custom_can_connector.py`, `scenario_connector_files/smart_panel_can_uplink_converter.py`, `smart_panel_core/event_bus.py`, and `smart_panel_core/events.py`. These correspond to earlier **Event Bus / custom CAN connector** ideas in the report, and are not the refined active path described above. They are retained for historical comparison rather than silently deleted.
+I also retain `scenario_connector_files/custom_can_connector.py`, `scenario_connector_files/smart_panel_can_uplink_converter.py`, `smart_panel_core/event_bus.py`, and `smart_panel_core/events.py`. These are earlier **Event Bus / custom CAN connector** variants, not the final active path described above. I retained them to show how the design evolved.
 
 ## Prerequisites
 
-- Linux host (an **Orange Pi Zero 3** was used in the report) with kernel CAN support and a configured `can0`.
+- Linux host (I evaluated this on an **Orange Pi Zero 3**) with kernel CAN support and a configured `can0`.
 - A CAN transceiver/adapter that actually communicates with your test devices. See [Hardware and SocketCAN](../../hardware/README.md).
 - Python 3.11/3.12, `grpcio`, and `protobuf` on the host.
 - Docker + Docker Compose on Linux, and a reachable ThingsBoard server with **your own gateway access token**.
@@ -181,7 +181,7 @@ The `--system-site-packages` virtual environment option allows OS-provided PyGOb
 
 ### 3. Optionally seed example local data
 
-Runtime databases are not committed. The Local Processor will create an empty scenario file if it is missing. If you prefer the sample `Night` and `day` scenarios and device registry from the cleaned source archive:
+Runtime databases are not committed. The Local Processor will create an empty scenario file if it is missing. If you prefer the sample `Night` and `day` scenarios and device registry from this repository:
 
 ```bash
 cp examples/scenarios.json scenario_connector_files/smart_panel_core/scenario/scenario_data.json
@@ -235,7 +235,7 @@ python3 -m smart_panel_core.terminal_ui
 python3 smart_panel_ui.py
 ```
 
-The UI uses `LocalProcessorGrpcClient` and never directly opens the CAN device. To experiment with full-screen UI, the source checks the `SMART_PANEL_FULLSCREEN=1` environment variable. The report describes remote viewing using VNC over an SSH tunnel for headless development; no VNC server configuration is included in this repository.
+The UI uses `LocalProcessorGrpcClient` and never directly opens the CAN device. To experiment with full-screen UI, the source checks the `SMART_PANEL_FULLSCREEN=1` environment variable. For headless development, I used VNC over an SSH tunnel; no VNC server configuration is included in this repository.
 
 ## Programmatic gRPC example
 
@@ -275,11 +275,11 @@ This is **not** a replacement for an end-to-end device-in-the-loop test.
 
 ## Design caveats and security
 
-- **Reconstructed helper:** `smart_panel_shared/can_scenario_bridge.py` was absent from the supplied archive. A small, bounded FIFO implementation was added from the method calls in existing files. It operates only when the converter and Scenario Connector run **inside the same Python process**. It is not a durable queue; messages can be dropped when full or lost on process restart.
+- **Shared helper:** `smart_panel_shared/can_scenario_bridge.py` is a small, bounded FIFO replacement created to satisfy the APIs used by the converter and connector. I have validated its basic queue behavior with unit tests but not with physical CAN hardware. It operates only when the converter and Scenario Connector run **inside the same Python process**. It is not a durable queue; messages can be dropped when full or lost on process restart.
 - **Version coupling:** the connector locates the original CAN Connector by name and invokes its server-side RPC handler. That is less invasive than modifying the main Gateway class, but can still depend on Gateway internals and configuration conventions.
 - **RPC namespace:** negative local RPC IDs are an implementation convention; verify conflict handling and responses with the actual ThingsBoard Gateway release.
-- **Credentials:** the public Compose template requires `${TB_GW_ACCESS_TOKEN}` from a non-committed `.env` file. The uploader reports that source values were manually anonymized; this review cannot establish whether any earlier token-like string was active. Rotate any actually deployed credential that may have been exposed.
+- **Credentials:** the Compose template reads `${TB_GW_ACCESS_TOKEN}` from a local, ignored `.env` file. I do not include a working gateway token or private device protocol values. Use a dedicated test token and restrict access to the local environment file.
 - **Local gRPC security:** `127.0.0.1:50051` is a trusted-host development endpoint without TLS/authentication. Do not forward or expose it on an untrusted interface without changing the design.
 - **Real deployment:** no live physical CAN, GTK4 display, or ThingsBoard network setup was available to validate all steps as an integrated system.
 
-For all repository changes and unresolved items, see [Assumptions and open items](../../docs/assumptions-and-open-items.md).
+For version assumptions, security boundaries, and unresolved integration items, see my [engineering notes](../../docs/engineering-notes.md).

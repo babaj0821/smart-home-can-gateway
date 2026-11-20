@@ -13,6 +13,11 @@ venv/
 !.env.example
 *.pem
 *.key
+*.p12
+*.pfx
+*.asc
+*.secrets
+**/tb_gateway.local.json
 
 # Runtime state and logs (the examples/ folders contain safe sample JSON)
 **/storage/data.json

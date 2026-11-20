@@ -1,16 +1,16 @@
 # CAN Smart Home Gateway — Four Tested Architecture Approaches
 
-**A comparative IoT engineering project exploring four ways to combine CAN devices, ThingsBoard Gateway, and local smart-home automation.**
+**My comparative IoT engineering project exploring four ways to combine CAN devices, ThingsBoard Gateway, and local smart-home automation.**
 
 The central question is not *“Which architecture won?”* It is **“Which architecture fits an organization's requirements, hardware budget, software maintenance model, and operational constraints?”**
 
-During the internship, **four architectures were designed, tried, and evaluated**. Each has different strengths and limitations. The ThingsBoard Edge experiment was also tested, but **could not run stably alongside Gateway on the Orange Pi Zero 3 configuration used**. This outcome is a limitation of the tested environment, not a statement that Edge cannot work on more capable hardware.
+During my internship, **I designed, implemented or configured, tested, and evaluated four architecture approaches**. Each has different strengths and limitations. I also trialed ThingsBoard Edge, but **I could not get Edge and Gateway to run stably together on my Orange Pi Zero 3 test setup**. This is a limitation of my tested environment, not evidence that Edge cannot work on more capable hardware.
 
-> **What is in this GitHub snapshot?** Source material for approaches **01–03**; an evaluation and architectural explanation for **04 — ThingsBoard Edge**, whose implementation/configuration files will be pushed later. These are prototypes and experiments—not four production-certified deployments. The repository is intended to support comparison, learning, adaptation, and independent organizational selection.
+> **Repository scope:** I include prototype source for approaches **01–03** and my design and evaluation of **04 — ThingsBoard Edge**. The Edge Rule Chain exports and deployment configuration are **not included**. These are experimental implementations and observations, not four production-certified deployments. I share them so others can compare the trade-offs and adapt the ideas to their own constraints.
 
 ## The shared problem
 
-A CAN-based smart home may need to receive telemetry, control devices from ThingsBoard, and execute local scenarios even during a remote-server outage. The internship investigated simplifying an earlier device-to-gateway route that used an intermediate board, while retaining useful local processing.
+A CAN-based smart home may need to receive telemetry, control devices from ThingsBoard, and execute local scenarios even during a remote-server outage. In this project, I investigated simplifying an earlier device-to-gateway route that used an intermediate board, while preserving useful local processing.
 
 Across the alternatives, the main responsibilities are:
 
@@ -28,15 +28,15 @@ The four architectures distribute these responsibilities differently. They are *
 | **[01 — Parallel SocketCAN](architectures/01-parallel-socketcan/README.md)** | Gateway and Local Processor use separate sockets on the same `can0` interface. | Independent local CAN control; light processing path; minimal need to customize Gateway internals. | CAN decoding and server-facing logic may be duplicated; parallel device-control paths are harder to coordinate. | Direct bus access, independent local control, simple lightweight hosts. |
 | **[02 — Gateway-integrated](architectures/02-gateway-integrated/README.md)** | Gateway exposes decoded state and local RPC access over a Unix-domain socket. | One CAN conversion path; high-level API for the Local Processor; reuses Gateway downlink. | Changes to Gateway core/handlers; upgrade/maintenance burden; shared-socket deployment complexity. | Centralized device access and willingness to maintain a customized Gateway. |
 | **[03 — Scenario Connector + gRPC](architectures/03-scenario-connector/README.md)** | A dedicated Gateway connector bridges converted telemetry and local commands to a host-side service. | Clear separation of responsibilities; no direct CAN dependency in local logic; reuses CAN Connector RPC. | More processes/IPC, gRPC and queue lifecycle management; connector API/version dependencies. | Modular integration, local services, separate UI and scenario logic. |
-| **[04 — ThingsBoard Edge](architectures/04-thingsboard-edge/README.md)** | Local ThingsBoard Rule Chains perform scenario orchestration; Gateway remains CAN-facing. | Reuses ThingsBoard rule-engine concepts and familiar tooling; avoids a separate bespoke Python Scenario Engine. | Higher runtime resource demand; instability on the tested low-memory board; files pending in this snapshot. | Organizations with sufficient edge hardware and an existing ThingsBoard operating model. |
+| **[04 — ThingsBoard Edge](architectures/04-thingsboard-edge/README.md)** | Local ThingsBoard Rule Chains perform scenario orchestration; Gateway remains CAN-facing. | Reuses ThingsBoard rule-engine concepts and familiar tooling; avoids a separate bespoke Python Scenario Engine. | Higher runtime resource demand; instability on my tested low-memory board; Edge exports are not included. | Organizations with sufficient edge hardware and an existing ThingsBoard operating model. |
 
-**Evidence boundary:** these are *qualitative engineering observations*, not rankings from a controlled performance benchmark. Read each architecture's test observations and limitations before adapting it.
+**Evidence boundary:** my conclusions are *qualitative engineering observations*, not a controlled performance benchmark or a universal ranking. Each architecture README explains what I tested and what remains unverified.
 
 ➡ **[Detailed trade-off comparison](docs/architecture-comparison.md)** · **[Organization-oriented selection guide](docs/organization-selection-guide.md)**
 
 ## Architecture diagrams
 
-Each alternative has its own dedicated README, including diagrams and data flows from the report:
+Each alternative has its own dedicated README, including diagrams and data flows I developed during the evaluation:
 
 - [01 · Parallel SocketCAN: two independent paths](architectures/01-parallel-socketcan/README.md#architecture-diagram)
 - [02 · Gateway-integrated: hooks, local IPC, and RPC](architectures/02-gateway-integrated/README.md#architecture)
@@ -50,11 +50,12 @@ The project uses **Smart Panel** to mean the broader local system, **Local Proce
 ```text
 smart-home-can-gateway/
 ├── README.md
+├── LICENSE                       # MIT terms for project-authored files
 ├── architectures/
 │   ├── 01-parallel-socketcan/    # Direct-CAN local processor prototype
 │   ├── 02-gateway-integrated/    # Unix IPC and customized Gateway service
 │   ├── 03-scenario-connector/    # Connector, gRPC service, GTK4 UI
-│   └── 04-thingsboard-edge/      # Experiment/evaluation; source files to follow
+│   └── 04-thingsboard-edge/      # Edge design and evaluation (no deployable exports)
 ├── config/                       # Shared root for deployment configuration
 │   ├── README.md                 # Configuration map and usage instructions
 │   ├── 01-parallel-socketcan/    # Environment template
@@ -66,14 +67,13 @@ smart-home-can-gateway/
 ├── docs/
 │   ├── architecture-comparison.md
 │   ├── organization-selection-guide.md
-│   ├── assumptions-and-open-items.md
-│   ├── publication-review.md
-│   └── diagrams/                 # Figures extracted from the internship report
+│   ├── engineering-notes.md
+│   └── diagrams/                 # Architecture figures from my evaluation
 ├── tests/                        # Limited non-hardware checks
-└── PUBLISHING.md
+└── NOTICE                        # Third-party source attribution
 ```
 
-**Configuration is deliberately centralized in the root [`config/`](config/README.md) directory.** Each architecture keeps its own source and documentation, while deployment templates, Gateway JSON and the hardware overlay live together in appropriately named subdirectories. The Docker Compose bind mounts and README commands have been updated to this layout. Application modules that *read* environment variables remain next to their Python importers.
+**I keep deployment configuration centralized in the root [`config/`](config/README.md) directory.** Each architecture keeps its own source and documentation, while deployment templates, Gateway JSON and the hardware overlay live together in appropriately named subdirectories. I aligned the Docker Compose bind mounts and setup instructions with this layout. Application modules that *read* environment variables remain next to their Python importers.
 
 ## How to evaluate an architecture for your organization
 
@@ -90,7 +90,7 @@ Use the [selection guide](docs/organization-selection-guide.md) to weight these 
 
 ## Getting started and validation
 
-Read the chosen architecture's README and the [Linux CAN / MCP2515 guide](hardware/README.md). All deployment configuration lives under [`config/`](config/README.md). Values such as CAN identifiers, protocol fields, and server settings were **intentionally anonymized** in the supplied material; no original values are restored or inferred here.
+Read the chosen architecture's README and the [Linux CAN / MCP2515 guide](hardware/README.md). All deployment configuration lives under [`config/`](config/README.md). I deliberately replaced some private CAN protocol values and service settings with placeholders. The public examples are **not** complete physical-device configurations; restoring them requires the appropriate private device specification.
 
 A limited repository-level check is available:
 
@@ -101,6 +101,10 @@ python3 -m compileall -q architectures tests
 
 These checks **do not** substitute for physical CAN, outage/recovery, ThingsBoard, UI, or ThingsBoard Edge hardware tests. The source code for the Edge experiment is not yet in this repository.
 
-Before publishing publicly, review [publication/redaction notes](docs/publication-review.md), [assumptions and source changes](docs/assumptions-and-open-items.md), and [GitHub publishing instructions](PUBLISHING.md). Some identifiers, organization names, CAN pin mappings, and diagram labels remain visible for manual review. The user-supplied dummy protocol fields are preserved rather than replaced with fabricated values.
+For reproducibility constraints, security boundaries, and integration gaps, see my [engineering notes](docs/engineering-notes.md). I have kept the intentionally abstract CAN mappings intact instead of inventing device protocol values. The diagrams illustrate my architecture evaluation and are not substitutes for wiring validation.
 
-**This repository documents four tested approaches so that different organizations can make their own evidence-based architectural choices.**
+## Licensing and attribution
+
+My original project source and documentation are provided under the repository [MIT license](LICENSE), subject to any underlying third-party rights. **The modified ThingsBoard Gateway service is an exception:** it retains ThingsBoard's copyright, remains governed by **Apache License 2.0**, and includes a copy of that license in its [source folder](architectures/02-gateway-integrated/gateway_patch/LICENSE-APACHE-2.0.txt). I document the upstream attribution and my modifications in the [NOTICE](NOTICE) file. This project is independent of ThingsBoard and does not redistribute ThingsBoard Server or Edge source.
+
+**I share four evaluated approaches to help other teams make evidence-based architecture choices rather than claim one design is universally best.**

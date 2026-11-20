@@ -1,8 +1,8 @@
 # Architecture figure index
 
-These images were extracted from the attached internship report and renamed for English documentation. They are **the report's diagrams**, not newly generated or experimentally verified wiring/simulation outputs.
+I included the architecture figures from my own internship evaluation to explain the four designs. I use English filenames for navigation. These are **conceptual engineering diagrams**, not independently verified physical wiring diagrams or measured simulation results.
 
-| File | Source report figure | What it illustrates |
+| File | Figure in my original evaluation | What it illustrates |
 |---|---|---|
 | [`linux-can-stack.png`](linux-can-stack.png) | Figure 3-1 | CAN network → MCP2515 → SPI/kernel → SocketCAN → gateway |
 | [`parallel-socketcan-overview.png`](parallel-socketcan-overview.png) | Figure 3-3 | Layered Local Processor with independent CAN path and MQTT integration |
@@ -16,4 +16,4 @@ These images were extracted from the attached internship report and renamed for 
 | [`scenario-rpc-native-gateway.png`](scenario-rpc-native-gateway.png) | Figure 3-13 | Refined local RPC route through the original CAN Connector |
 | [`scenario-connector-complete.png`](scenario-connector-complete.png) | Figure 3-14 | Complete Scenario Connector design including GTK4 UI and gRPC (one of four evaluated approaches) |
 
-Figures are included to help explain the project. Verify permission to publish them if this work belongs to an employer or another rights holder.
+I use these figures to document architecture choices; deployment still requires checking real CAN wiring, interface versions, and host resources.

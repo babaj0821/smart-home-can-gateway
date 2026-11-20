@@ -1,14 +1,14 @@
 # Architecture 04 — ThingsBoard Edge and Local Rule Chains
 
-**Tested during the internship; implementation files pending for this repository.** This architecture was not merely a hypothetical diagram: the report describes its scenario-processing design, resource tuning, desktop trials and attempts to run ThingsBoard Edge together with Gateway on an Orange Pi Zero 3. Those board trials **did not reach stable operation**. The fact that source/exported Rule Chains are **not yet pushed here** should not be confused with a claim that the architecture was never tested.
+**I designed and evaluated this architecture during my internship, but its deployment files are not included here.** I experimented with scenario-processing Rule Chains, runtime tuning, desktop trials, and running ThingsBoard Edge alongside Gateway on an Orange Pi Zero 3. **I did not achieve stable joint operation on that board**. The missing Rule Chain exports do not mean that I only proposed the architecture on paper.
 
-This is **one of four evaluated alternatives**, with benefits and constraints that differ from the Python Local Processor designs. It may suit other organizational environments, particularly when adequate hardware resources and ThingsBoard operational expertise are available. It is not presented as universally better or worse.
+I evaluated this as **one of four alternatives**, with benefits and constraints that differ from the Python Local Processor designs. It may suit other organizational environments, particularly when adequate hardware resources and ThingsBoard operational expertise are available. It is not presented as universally better or worse.
 
 [← Main repository](../../README.md) · [Architecture comparison](../../docs/architecture-comparison.md) · [Organizational selection guide](../../docs/organization-selection-guide.md)
 
 ## Conceptual architecture
 
-![ThingsBoard Edge with a virtual Scenario Controller, Root and Scenario Engine Rule Chains, and CAN Gateway — figure 3-8 from the internship report](../../docs/diagrams/thingsboard-edge-overview.png)
+![ThingsBoard Edge with a virtual Scenario Controller, Root and Scenario Engine Rule Chains, and CAN Gateway — from my architecture evaluation](../../docs/diagrams/thingsboard-edge-overview.png)
 
 ```text
                            Remote ThingsBoard Server
@@ -36,9 +36,9 @@ This is **one of four evaluated alternatives**, with benefits and constraints th
                                                     Physical CAN devices
 ```
 
-Unlike architectures 01–03, named scenario definitions and actions are processed through **ThingsBoard Edge Rule Chains**, rather than a separate Python Scenario Engine. The Gateway keeps responsibility for CAN frames and the device RPC downlink. This is the tested **design intent** from the report, not an exported deployable Edge configuration.
+Unlike architectures 01–03, named scenario definitions and actions are processed through **ThingsBoard Edge Rule Chains**, rather than a separate Python Scenario Engine. The Gateway keeps responsibility for CAN frames and the device RPC downlink. This describes the **design I evaluated**, not an exported deployable Edge configuration.
 
-## Scenario execution flow examined in the report
+## Scenario execution flow I evaluated
 
 1. Maintain scenario definitions as **server-side attributes** associated with a virtual **Scenario Controller** device; each action specifies target device, RPC method and parameters.
 2. A widget or client requests a named scenario such as `night` without transmitting all its implementation details.
@@ -54,8 +54,8 @@ Unlike architectures 01–03, named scenario definitions and actions are process
 - Fits an organization that already manages ThingsBoard workflows and can dedicate sufficient resources to an Edge installation.
 
 **Limitations**
-- The tested Orange Pi Zero 3 did not have sufficient practical headroom for stable Edge + Gateway + supporting-service operation under the reported tuning attempts.
-- The report describes high RAM pressure: an initial ~1.3 GB Edge estimate versus ~700 MB free during testing; a 600 MiB-restricted container used approximately 595 MiB, before all other service demand was accounted for.
+- On my Orange Pi Zero 3 test setup, I could not achieve reliable Edge + Gateway + supporting-service operation, even after tuning.
+- I observed substantial RAM pressure: an initial Edge estimate of roughly 1.3 GB against about 700 MB free on the tested board; in a 600 MiB-restricted container trial, usage reached approximately 595 MiB before accounting for other services.
 - Swap pressure, severe system slowdown, crashes and manual resets occurred in the board experiments, including trials without Docker.
 - An organization adopting this design must provision and validate the Edge runtime and its rule-engine operations on actual deployment hardware.
 
@@ -65,13 +65,13 @@ Unlike architectures 01–03, named scenario definitions and actions are process
 
 | Question | Status |
 |---|---|
-| Was the architecture designed and tried during the internship? | **Yes** — described with Rule Chains, scenario attributes, and Edge installation/resource tests. |
+| Did I design and test this alternative? | **Yes** — I experimented with Rule Chains, scenario attributes, and Edge installation/resource constraints. |
 | Did Edge and Gateway run stably together on the tested Orange Pi Zero 3? | **No** — not under the tested hardware and tuning conditions. |
-| Are exported Rule Chains, source files, and Edge deployment configs included in this repository? | **Not yet** — will be added in a future push when the actual files are available. |
+| Are exported Rule Chains, source files, and Edge deployment configs included? | **No** — this repository documents the tested approach but does not contain those exports. |
 | Does this rule out Edge for other organizations? | **No** — hardware capacity, operational requirements and platform expertise can differ. |
 
-## Future additions
+## Repository scope
 
-When the actual experiment files are supplied, this folder can receive Edge Rule Chain exports and related source, while deployment/configuration belongs in a **centralized [`config/04-thingsboard-edge/`](../../config/README.md)** directory. The current repository does **not** invent any filenames, resource profiles, endpoints, credentials or test results beyond the report.
+I include this engineering evaluation rather than fabricate deployment artifacts that are not part of the published source. No Edge Rule Chain exports, credentials, or runnable Edge configuration are bundled. The [central configuration layout](../../config/README.md) covers the other implemented alternatives.
 
 For organizational selection, see the [four-way comparison](../../docs/architecture-comparison.md) and [selection guide](../../docs/organization-selection-guide.md).

@@ -1,0 +1,28 @@
+CAN Smart Home Gateway — Third-party source attributions
+
+This repository contains a modified copy of one upstream ThingsBoard IoT
+Gateway source file:
+
+  architectures/02-gateway-integrated/gateway_patch/tb_gateway_service.py
+
+Original project: ThingsBoard IoT Gateway
+Copyright 2026. ThingsBoard
+Upstream project: https://github.com/thingsboard/thingsboard-gateway
+Upstream file: thingsboard_gateway/gateway/tb_gateway_service.py
+Original license: Apache License, Version 2.0
+License copy: architectures/02-gateway-integrated/gateway_patch/LICENSE-APACHE-2.0.txt
+
+Modified in 2026 by Iman Babajani. The modifications introduce local device
+state caching, access to Gateway services through an authenticated Unix-domain
+socket manager, and local scenario RPC forwarding over IPC. The public copy
+reads IPC authentication keys from environment variables and does not print
+cached device telemetry directly to standard output.
+
+The upstream copyright and license notice remain at the beginning of the
+modified file. That file is redistributed under Apache-2.0; the root MIT
+license does not replace or override the upstream Apache-2.0 requirements.
+The rest of the author's original project code and documentation are covered
+by the root MIT license, subject to any independent rights in included
+assets. Third-party libraries and container images are not vendored here and
+are governed by their own applicable licenses. This independent research
+project is not affiliated with or endorsed by ThingsBoard.

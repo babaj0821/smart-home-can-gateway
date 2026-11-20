@@ -1,6 +1,6 @@
 {
   "name": "PADNA-CAN-Gateway",
-  "id": "60c2046a-d093-4feb-a042-fbcd27875eee",
+  "id": "1a62d0e9-2428-4954-9d42-a9f83d6dfe98",
   "interface": "socketcan",
   "channel": "can0",
   "backend": {

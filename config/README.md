@@ -1,14 +1,18 @@
 # Centralized configuration
 
-All **deployment-specific configuration files and templates** are grouped in this directory, while implementation code remains under [`../architectures/`](../architectures/). Subdirectories keep the four alternative architectures logically distinct. Do **not** mix settings from unrelated approaches into one running Gateway instance.
+I group **deployment-specific configuration templates** in this directory, while implementation code remains under [`../architectures/`](../architectures/). Subdirectories keep the four alternative architectures logically distinct. Do **not** mix settings from unrelated approaches into one running Gateway instance.
 
 ```text
 config/
 ├── README.md
 ├── 01-parallel-socketcan/
-│   └── .env.example                  # Optional MQTT bridge variables
+│   ├── .env.example                  # Optional MQTT bridge variables
+│   ├── tb_gateway.json              # Gateway reference settings
+│   └── padnaCanGateway.json         # CAN mapping examples
 ├── 02-gateway-integrated/
-│   └── .env.example                  # Unix-domain socket paths/authentication
+│   ├── .env.example                  # Unix-domain socket paths/authentication
+│   ├── tb_gateway.json              # Customized Gateway reference settings
+│   └── padnaCanGateway.json         # CAN mapping examples
 ├── 03-scenario-connector/
 │   ├── .env.example                  # ThingsBoard endpoint/token, CAN interface
 │   ├── docker-compose.yml           # Reference deployment (paths updated)
@@ -59,7 +63,7 @@ The Compose file lives **beside** its `.env.example`; bind-mounted source paths 
 
 For the full setup, including the host-side gRPC server, see the [architecture 03 README](../architectures/03-scenario-connector/README.md).
 
-**Architecture 04:** its ThingsBoard Edge setup, Rule Chain exports, and deployment files have **not been supplied yet**. They can be added under `config/04-thingsboard-edge/` when the experiment's actual files are pushed; no guessed configurations are included now.
+**Architecture 04:** my ThingsBoard Edge experiments are documented, but Edge Rule Chain exports and deployment configuration are **not included** here; I do not substitute invented settings.
 
 **Hardware:** [`hardware/mcp2515.dts`](hardware/mcp2515.dts) is a *board-dependent overlay source*, not a universal drop-in configuration. Read the [bring-up guide](../hardware/README.md) and verify SPI/IRQ/clock wiring before compiling or deploying it.
 
@@ -70,6 +74,6 @@ For the full setup, including the host-side gRPC server, see the [architecture 0
 - `requirements.txt` and `requirements-host.txt` are dependency manifests, not host configuration.
 - The Gateway-integrated `gateway_patch/tb_gateway_service.py` is code derived from an upstream file, not a configuration template.
 
-## Public repository safety
+## Configuration safety
 
-The supplied CAN IDs, expression fields and server addresses include values **deliberately anonymized by the uploader**. They must not be replaced by invented production values. `.env` files are ignored by Git; publish only the sample `.env.example` templates, and never commit deployed credentials. Also inspect the remaining connector UUIDs, organization names and hardware mappings before publishing publicly; see the [publication review](../docs/publication-review.md).
+I intentionally anonymized the private CAN protocol values and connection details. The connector UUIDs in this directory are newly generated **sample identifiers**, not secrets or identifiers from my original deployment. These JSON files are reference templates, **not production configuration**. Deployed tokens belong in local environment variables or a secrets manager, not tracked JSON. The example `.env` templates contain only placeholders; `.env` files are ignored by Git. See [engineering notes](../docs/engineering-notes.md) for remaining technical limitations.

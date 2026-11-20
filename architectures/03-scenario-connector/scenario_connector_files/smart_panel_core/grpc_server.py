@@ -288,8 +288,7 @@ class LocalProcessorGrpcService:
             print(
                 "=== DEVICE ACTION RECEIVED"
                 f" | device={device}"
-                f" | action={action}"
-                f" | params={params} ===",
+                f" | action={action} ===",
                 flush=True
             )
 
@@ -515,11 +514,6 @@ class LocalProcessorGrpcService:
 
             print(
                 "=== SCENARIO EXECUTED / QUEUED ===",
-                flush=True
-            )
-
-            print(
-                result,
                 flush=True
             )
 

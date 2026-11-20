@@ -2,7 +2,7 @@
 
 A direct-CAN, layered **Local Processor** prototype for a smart-home gateway. In this design, the Local Processor runs independently of ThingsBoard Gateway and opens its **own SocketCAN connection to `can0`**, while ThingsBoard Gateway can access the same CAN interface using a different socket.
 
-This is **one of four architectures tested and evaluated in the internship**. It is a valid architectural option for settings that prioritize independent local control, rather than merely an unsuccessful step toward another design. The public code includes local device models and scenarios, but some CAN protocol constants were **deliberately replaced with placeholder text before sharing**. Those fields are redactions, not evidence that the original prototype lacked real protocol mappings.
+This is **one of the four architectures I tested and evaluated during my internship**. I consider it a valid architectural option for settings that prioritize independent local control, rather than merely an unsuccessful step toward another design. I include my device models and scenario code, but **I intentionally replaced private CAN protocol constants with placeholders** in this public version. The placeholders are not the values I used for physical device tests.
 
 [← Main repository](../../README.md) · [Architecture comparison](../../docs/architecture-comparison.md) · [Hardware bring-up](../../hardware/README.md)
 
@@ -40,7 +40,7 @@ CAN devices <--> can0 --> ThingsBoard Gateway / CAN Connector
 | Local UI | [`ui/scenario_menu.py`](ui/scenario_menu.py), [`test.py`](test.py) | Terminal-based device and scenario controls |
 | Remote bridge | [`integrations/thingsboard/scenario_bridge.py`](integrations/thingsboard/scenario_bridge.py) | MQTT interface for scenario requests and catalog data |
 
-`main.py` is empty in the supplied snapshot. The interactive experiment is driven by `test.py`.
+`main.py` is empty in this source snapshot. I used `test.py` as the interactive prototype entry point.
 
 ## Data flow
 
@@ -95,7 +95,7 @@ cp ../../config/01-parallel-socketcan/.env.example .env
 set -a; . ./.env; set +a
 ```
 
-**Before attempting device control**, restore the intentionally anonymized hardware-specific values in [`canbus/can_protocol.py`](canbus/can_protocol.py): operation bit positions, device ID mask, value limits, CAN payload indexes, and the correct device register map. The public archive deliberately does **not** disclose the original values. Do not invent or guess them; use your private protocol documentation before testing any physical equipment.
+**Before attempting device control**, restore the intentionally anonymized hardware-specific values in [`canbus/can_protocol.py`](canbus/can_protocol.py): operation bit positions, device ID mask, value limits, CAN payload indexes, and the correct device register map. I deliberately do **not** publish my original private device values. Do not invent or guess them; use your private protocol documentation before testing any physical equipment.
 
 After validating the protocol against your **own test CAN device**:
 
@@ -107,7 +107,7 @@ python3 test.py
 
 ## Engineering evaluation: strengths and limitations
 
-**What was tested in the internship:** multiple SocketCAN consumers on `can0`, direct local lamp control, thermostat functionality and the local scenario path. This supports feasibility of the *approach*, not a claim that every published placeholder can operate real hardware without restoring private values.
+**What I evaluated:** multiple SocketCAN consumers on `can0`, direct local lamp control, thermostat functions, and execution of local scenarios. I observed feasibility of the *approach* on my test setup; this does not mean the anonymized public protocol can operate real hardware without device-specific values.
 
 **Strengths**
 - Independent control of CAN devices even when the remote ThingsBoard server is not reachable.
@@ -125,10 +125,10 @@ python3 test.py
 
 ## Known limitations
 
-- `canbus/can_protocol.py` contains **intentional redactions**. It is not executable for meaningful CAN protocol operations until private device-specific values are supplied; it should not be interpreted as an abandoned or unfinished implementation. The low-level `CANInterface` framing was repaired to be valid Python and use the standard Linux classic `can_frame` layout, but the application protocol was deliberately not invented.
+- `canbus/can_protocol.py` contains **intentional redactions**. It is not executable for meaningful CAN protocol operations until private device-specific values are supplied; it should not be interpreted as an abandoned or unfinished implementation. I retained valid Python framing using the Linux classic `can_frame` layout, while leaving the application protocol values intentionally anonymized.
 - The six lamp classes and thermostat are tightly coupled to the project-specific CAN device/register semantics.
 - `integrations/thingsboard/tb_bridge_test.py` is incomplete: it constructs the MQTT bridge without the required `scenario_engine` argument.
-- The MQTT bridge uses environment variables now (no real token in source); rotate any credentials if they were ever live and publicly exposed; the uploader reports that example values were intentionally anonymized.
+- The MQTT bridge reads its token from environment variables rather than a committed value. The example token is a nonfunctional placeholder; I have not included real deployment credentials.
 - No automated device-in-the-loop or outage/recovery test is included.
 
-See [Assumptions and open items](../../docs/assumptions-and-open-items.md) for the complete list.
+See [Engineering notes](../../docs/engineering-notes.md) for additional version, security, and integration limitations.

@@ -1,10 +1,10 @@
 # Architecture 02 — Gateway-Integrated Local Processing
 
-This **tested architecture alternative** retains **ThingsBoard Gateway as the only process that accesses the physical CAN network**. A separate host-side **Local Processor** obtains high-level device state and sends commands through the gateway rather than opening a second SocketCAN socket. The architecture adds a Unix-domain-socket IPC interface and integrates local commands with the existing gateway RPC pipeline.
+In this architecture, **I evaluated a Gateway-centered local-processing design**. I kept **ThingsBoard Gateway as the only process accessing the physical CAN network**. My separate host-side **Local Processor** obtains high-level device state and sends commands through the gateway rather than opening a second SocketCAN socket. The architecture adds a Unix-domain-socket IPC interface and integrates local commands with the existing gateway RPC pipeline.
 
-> **Source status:** The host-side source from `internship.zip` and the **customized gateway service file supplied separately** are included. The provided gateway service is not an entire ThingsBoard installation. Its telemetry cache also requires a small call from the CAN connector, described below. Hardware and end-to-end compatibility have not been tested in this repackaging.
+> **Source scope:** I include my host-side Local Processor code and a **modified upstream ThingsBoard Gateway service file**. The repository does not contain a complete Gateway installation. My telemetry cache also requires a CAN Connector hook described below. I have not validated this published snapshot end to end against a deployed Gateway image.
 
-[← Main repository](../../README.md) · [Architecture comparison](../../docs/architecture-comparison.md) · [Publication review](../../docs/publication-review.md)
+[← Main repository](../../README.md) · [Architecture comparison](../../docs/architecture-comparison.md) · [Engineering notes](../../docs/engineering-notes.md)
 
 ## Architecture
 
@@ -37,7 +37,7 @@ This **tested architecture alternative** retains **ThingsBoard Gateway as the on
 
 | File or directory | Responsibility |
 |---|---|
-| [`gateway_patch/tb_gateway_service.py`](gateway_patch/tb_gateway_service.py) | **Modified upstream ThingsBoard Gateway service** with a `GatewayManager`, exposed local device APIs, `send_local_rpc(...)`, device-state cache, and scenario-command forwarding. This is the only source file taken from the new `thingsboard-gateway.zip`. |
+| [`gateway_patch/tb_gateway_service.py`](gateway_patch/tb_gateway_service.py) | **Modified upstream ThingsBoard Gateway service** with a `GatewayManager`, exposed local device APIs, `send_local_rpc(...)`, device-state cache, and scenario-command forwarding. This is the only bundled copy of an upstream Gateway core source file. |
 | [`gateway/gateway_client.py`](gateway/gateway_client.py) | Connects to the gateway's manager proxy at a shared Unix socket and calls `get_local_devices`, `get_device_data`, `get_available_connectors`, and `send_local_rpc`. |
 | [`devices/`](devices/) | Device models and a Device Manager that use the gateway client. |
 | [`scenario/scenario_engine.py`](scenario/scenario_engine.py) | Translates a named scenario into device commands. |
@@ -46,7 +46,7 @@ This **tested architecture alternative** retains **ThingsBoard Gateway as the on
 | [`terminal/`](terminal/) | Host-side local terminal interface. |
 | [`examples/scenarios.json`](examples/scenarios.json) | Sanitized example scenarios, **not real deployment data**. |
 
-The gateway file is based on **ThingsBoard upstream code** and retains its Apache-2.0 header. The bundled [Apache-2.0 license](gateway_patch/LICENSE-APACHE-2.0.txt) applies to that modified upstream file, **not automatically to all other project files**. Avoid copying the entire upstream distribution into this repository. All other files in this repository are original work, licensed under <MIT / Apache-2.0>; see `LICENSE`.
+The modified Gateway service contains **ThingsBoard upstream code**; I retained its original copyright and Apache-2.0 header and marked my changes. The full [Apache-2.0 license](gateway_patch/LICENSE-APACHE-2.0.txt) governs that file. My separately authored project code is under the root [MIT license](../../LICENSE), as clarified in the [NOTICE](../../NOTICE).
 
 ## Data and command paths
 
@@ -58,7 +58,7 @@ The gateway file is based on **ThingsBoard upstream code** and retains its Apach
 4. A host-side `GatewayClient` reads device state using **`get_device_data(device_name)`**; device management and scenarios work on structured data, not raw CAN frames.
 5. The normal gateway uplink to ThingsBoard continues separately.
 
-**Important integration detail:** In the supplied gateway service, `update_local_data` is **defined but not called inside `tb_gateway_service.py`**. The separate source ZIP also included an upstream `can_connector.py` with a call to `self.__gateway.update_local_data(new_data)` before `send_to_storage(...)`. Per the request to keep only the relevant gateway file, that entire upstream connector is **not republished here**. When integrating, confirm your installed CAN connector calls the cache updater after conversion; otherwise the Local Processor's state cache will remain empty. This is an upstream-version-specific integration step, not a missing secret value.
+**Integration boundary:** I implemented `update_local_data` in the modified service, but **the service does not call that method automatically**. In my integrated prototype I added a call from the CAN Connector after successful conversion, before normal storage forwarding. I did not bundle a second copy of the upstream CAN Connector. A deployment needs the equivalent hook in its **version-matched** connector; without it the local state cache remains empty. This is a functional integration dependency, not a hidden credential.
 
 ### 2. Local RPC to CAN device
 
@@ -76,15 +76,15 @@ The same gateway service file also contains code to forward `getScenarios`, `run
 | Gateway manager | `/tmp/gateway` | Local Processor → Gateway API | `GATEWAY_AUTHKEY` |
 | Scenario command listener | `/tmp/smart_panel` | Gateway → Local Processor's scenario service | `SMART_PANEL_AUTHKEY` |
 
-The gateway runs in a container and the Local Processor runs on the Linux host. A Unix socket path **must refer to the same shared filesystem location** in both processes (the report used a `/tmp` bind mount). For a hardened environment, use a dedicated shared directory with minimal permissions, rather than mounting all of `/tmp`.
+In my design, the gateway runs in a container and the Local Processor runs on the Linux host. Each Unix socket path **must refer to the same filesystem location** in both processes (I used a shared `/tmp` mount during prototyping). For a hardened environment, use a dedicated shared directory with minimal permissions, rather than mounting all of `/tmp`.
 
-The uploaded upstream-derived service had **literal IPC authentication values** in the source. In this public-ready version, both have been replaced with **mandatory environment variables** matching the sanitized host client. No credential values have been guessed or restored. The socket-path environment variables are optional overrides; deployment permissions and socket cleanup still need validation.
+I use **required environment variables** (`GATEWAY_AUTHKEY` and `SMART_PANEL_AUTHKEY`) for IPC authentication instead of embedding literal values. The `.env.example` contains placeholders only. Socket paths can also be overridden by environment variables. This `multiprocessing` IPC design relies on trusted peers and filesystem permissions; its authentication is not a reason to expose the sockets to untrusted users.
 
 ## Running a compatible installation
 
 **Prerequisites:** a ThingsBoard Gateway version compatible with this customized `tb_gateway_service.py`; a working Linux `can0`; suitable CAN Connector and converters; Docker or an equivalent process environment; Python for the host client; and shared Unix-socket paths.
 
-The source archive's Gateway Dockerfile referred to **`thingsboard/tb-gateway:3.8.3`**. The Scenario Connector experiment uses **3.8.4**. This does **not** prove that replacing the gateway service in either version is safe without review. Check the complete upstream module dependencies and test with a matching image before modifying a deployment.
+I originally worked with a **`thingsboard/tb-gateway:3.8.3`** base in this approach; the Scenario Connector Compose example uses **3.8.4**. These releases are not interchangeable for a whole-file core patch. I have not verified drop-in compatibility of the published modified service against either image; any deployment needs a matched dependency and integration test.
 
 For the host-side environment:
 
@@ -104,13 +104,13 @@ set -a; . ./.env; set +a
 python3 -m scenario.scenario_rpc_server
 ```
 
-The Gateway container must receive `GATEWAY_AUTHKEY` and `SMART_PANEL_AUTHKEY` too (e.g., via its own non-committed environment file or Compose `environment:` mapping), and must share the Unix socket locations. **Simply copying this file into a repository does not install the patch in a running ThingsBoard Gateway.** Review the upstream module location, version, dependencies, and CAN-telemetry hook before deployment.
+The Gateway container must receive `GATEWAY_AUTHKEY` and `SMART_PANEL_AUTHKEY` too (e.g., via its own non-committed environment file or Compose `environment:` mapping), and must share the Unix socket locations. **This source file is a version-sensitive customization, not an automatic Gateway patch installer.** A running deployment must supply it through a controlled, version-matched integration and include the CAN telemetry hook.
 
 To use the example scenario storage, copy the sanitized fixture to `scenario/data.json`. Runtime storage files are ignored by Git.
 
 ## Engineering evaluation: strengths and limitations
 
-**What was tested in the internship:** exposing processed telemetry to local logic, injecting local device RPC into Gateway's usual downlink path, and using Unix-domain-socket IPC between the Dockerized Gateway and the host Local Processor.
+**What I evaluated:** exposing converted telemetry to local logic, injecting local device RPC into Gateway's existing downlink path, and using Unix-domain-socket IPC between a Dockerized Gateway and my host Local Processor.
 
 **Strengths**
 - Centralizes CAN decoding and command conversion in a single Gateway-controlled pipeline.

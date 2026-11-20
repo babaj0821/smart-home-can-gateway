@@ -1,8 +1,8 @@
 # Four local-processing architectures: comparative evaluation
 
-This is a **side-by-side evaluation of four approaches that were explored and tested during the internship**. It does not crown a universal winner. Architecture 04 was experimentally exercised but **did not achieve a stable deployment on the tested Orange Pi Zero 3**; its source/exported rules have not yet been supplied for this public snapshot. Architectures 01–03 have source snapshots here, with intentionally anonymized hardware-specific details.
+This is **my side-by-side engineering evaluation** of the four approaches I investigated during my internship. I do not declare a universal winner. I also tested architecture 04, but **could not obtain a stable Edge + Gateway deployment on my Orange Pi Zero 3 setup**; its Rule Chain exports are not included here. I include source for architectures 01–03, with intentional redactions of private CAN protocol details.
 
-The comparison is based on the **implementation descriptions, figures, and experimental observations in the internship report**. There is no uniform numerical benchmark of latency, CPU load, power, reliability, or cost across all four candidates. Advantages and disadvantages below are therefore *design trade-offs and reported observations*, not independently measured competitive scores.
+I based this comparison on **my implementations, architecture figures, and experimental observations**. I did not run one controlled numerical benchmark of latency, CPU, power, reliability, or cost across all four alternatives. The table therefore describes *qualitative trade-offs and observations*, not measurements that establish one approach as best.
 
 ## Shared engineering problem
 
@@ -24,7 +24,7 @@ CAN bus (can0)
          `--> MQTT Bridge (separate)
 ```
 
-**What was tried:** independent SocketCAN sockets on the same interface; layered interface/protocol/device code; local lamp controls, thermostat functions and a Scenario Engine; a separate ThingsBoard MQTT bridge.
+**What I evaluated:** independent SocketCAN sockets on the same interface; layered interface/protocol/device code; local lamp controls, thermostat functions and a Scenario Engine; a separate ThingsBoard MQTT bridge.
 
 **Strengths**
 - Local control follows a direct path to CAN and does not require a Gateway RPC round trip.
@@ -52,7 +52,7 @@ CAN bus <--> CAN Connector / Converters <--> ThingsBoard Gateway <--> ThingsBoar
                                                Local Processor
 ```
 
-**What was tried:** exposing already-converted device state from Gateway, local RPC injection into the existing downlink path, host/container communication through a shared Unix-domain socket, and a Python local client/scenario process.
+**What I evaluated:** exposing already-converted device state from Gateway, local RPC injection into the existing downlink path, host/container communication through a shared Unix-domain socket, and a Python local client/scenario process.
 
 **Strengths**
 - Centralizes CAN protocol translation in the Gateway's CAN Connector/converters.
@@ -81,7 +81,7 @@ Commands: Local Processor -> gRPC command polling -> Scenario Connector
                 -> existing CAN Connector RPC handler -> Downlink Converter -> CAN
 ```
 
-**What was tried:** a dedicated Scenario Connector, gRPC between container and host, a Local Processor with state storage and scenario orchestration, and a GTK UI. Within this candidate, an earlier Event Bus/custom CAN Connector route was also investigated; the later source uses a simpler queue and dispatches local RPC through the original CAN Connector.
+**What I evaluated:** a dedicated Scenario Connector, gRPC between container and host, a Local Processor with state storage and scenario orchestration, and a GTK UI. Within this candidate, an earlier Event Bus/custom CAN Connector route was also investigated; the later source uses a simpler queue and dispatches local RPC through the original CAN Connector.
 
 **Strengths**
 - Keeps raw CAN and CAN conversion inside the Gateway, while keeping local business logic in a separate service.
@@ -110,7 +110,7 @@ Remote ThingsBoard server (when connected)
        Gateway / CAN Connector -> CAN bus
 ```
 
-**What was tried:** an Edge-based scenario design using a virtual Scenario Controller, server-side attributes for scenario definitions, routing through Root and Scenario Engine Rule Chains, resource-reduction experiments, and installation attempts on the Orange Pi Zero 3 with Gateway running.
+**What I evaluated:** an Edge-based scenario design using a virtual Scenario Controller, server-side attributes for scenario definitions, routing through Root and Scenario Engine Rule Chains, resource-reduction experiments, and installation attempts on the Orange Pi Zero 3 with Gateway running.
 
 **Strengths**
 - Reuses ThingsBoard's local rule-engine and RPC model for orchestration.
@@ -118,9 +118,9 @@ Remote ThingsBoard server (when connected)
 - May fit teams already deploying and administering ThingsBoard environments with sufficient edge hardware.
 
 **Limitations**
-- The report describes substantial memory demands: the initial assessment was around 1.3 GB, while available free memory on the tested board was about 700 MB; a tuned 600 MiB container test consumed nearly its entire limit, in addition to other services.
+- In my Edge tests, the initial memory estimate was around 1.3 GB while the tested board had roughly 700 MB free; a tuned 600 MiB container consumed almost its entire limit before accounting for the other services.
 - On the tested Orange Pi Zero 3, swapping, slowdown, and crashes prevented stable joint operation with Gateway despite tuning and local/non-container attempts.
-- Its export files, configuration and executable implementation are **not yet present in this public repository**; the experiment is documented from the report.
+- I have **not included** the Edge Rule Chain exports or deployable configuration in this repository; this section records the design and results I evaluated.
 
 **Potentially suitable when:** hardware resources and ThingsBoard operational expertise can support a local Edge instance. The tested low-memory board outcome warrants an early feasibility test.
 
@@ -134,8 +134,8 @@ Remote ThingsBoard server (when connected)
 | High-level CAN decode shared with local logic | Duplicated | Shared from Gateway | Shared from Gateway | Gateway decoding for Edge telemetry |
 | Changes to Gateway core | Not required for separate local route | **Required** in tested design | Custom connector/converter, not broad core patch | Not a goal of conceptual design |
 | Additional integration burden | Separate MQTT bridge + CAN clients | Unix IPC + customized Gateway | Queue + gRPC + host/container networking | Edge runtime + Rule Chains + operational services |
-| Reported hardware experience | Lightweight local prototype | Gateway plus local host process | Gateway plus local host process | **Unstable on tested Orange Pi Zero 3** |
-| Material available in this repository | Source (redacted protocol fields) | Host source + one customized upstream service file | Source + custom connector and UI | **Evaluation/README only; files to follow** |
+| Observed hardware experience | Lightweight local prototype | Gateway plus local host process | Gateway plus local host process | **Unstable on tested Orange Pi Zero 3** |
+| Material included | Source (anonymized protocol fields) | Host source + modified Apache-2.0 upstream service | Source + custom connector and UI | **Design/evaluation only; no deployable Edge export** |
 
 **Not measured consistently:** latency, deterministic command timing, CPU and energy consumption, availability percentages, total cost of ownership, and security posture. These cannot be inferred from architecture drawings alone.
 

@@ -1,6 +1,6 @@
 {
   "thingsboard": {
-    "host": "host ip",
+    "host": "thingsboard.example.invalid",
     "port": 11883,
     "remoteShell": false,
     "remoteConfiguration": true,
@@ -21,7 +21,7 @@
     "checkConnectorsConfigurationInSeconds": 60,
     "handleDeviceRenaming": true,
     "security": {
-      "accessToken": "accessToken"
+      "accessToken": "replace-with-gateway-token"
     },
     "qos": 1,
     "reportStrategy": {
@@ -66,12 +66,6 @@
       "type": "can",
       "name": "PADNA-CAN-Gateway",
       "configuration": "padnaCanGateway.json"
-    },
-    {
-      "type": "custom",
-      "name": "ScenarioConnector",
-      "configuration": "scenarioConnector.json",
-      "class": "ScenarioConnector"
     }
   ]
 }
